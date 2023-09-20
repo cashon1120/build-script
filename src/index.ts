@@ -4,18 +4,31 @@ import fs from "fs";
 import chalk from "chalk";
 import inquirer from "inquirer";
 import { execSync } from "child_process";
-
+import terminalLink from "terminal-link";
 import { getVersion, setVersion } from "./utils";
+import { PojectName, Project } from "./types";
 import { config } from "./config";
 import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
 
 (function () {
   let version = "";
-  let project: any = {};
+  let project: Project = {} as Project;
 
   async function build() {
-    console.log(chalk.green(`${project.label}: ${version}`));
-    console.log("执行命令========================>");
+    if (!fs.existsSync(BUILD_CONFIG_PATH)) {
+      console.log(chalk.red(`⛔ ${BUILD_CONFIG_PATH} 目录不存在`));
+      return;
+    }
+    if (!fs.existsSync(BUILD_DOCKER_FILE_PATH)) {
+      console.log(chalk.red(`⛔ ${BUILD_DOCKER_FILE_PATH} 目录不存在`));
+      return;
+    }
+    if (!fs.existsSync(project.distPath)) {
+      console.log(chalk.red(`⛔ ${project.distPath} 目录不存在`));
+      return;
+    }
+
+    console.log(chalk.gray("开始执行docker命令..."));
 
     fs.copyFileSync(BUILD_CONFIG_PATH, project.distPath + "/build.conf");
     console.log(chalk.blue(`拷贝 build.conf 至 ${project.distPath}`));
@@ -32,10 +45,19 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
     console.log(chalk.blue(`${pushExecStr} ...`));
     execSync(pushExecStr);
 
+    const harborLink = terminalLink(
+      "[查看镜像]",
+      `https://harbor.emhes.cn:1080/harbor/projects/${project.id}/repositories/${project.name}`
+    );
+    const pushLink = terminalLink(
+      "[发布版本]",
+      "https://serverweb.emhes.cn/#/containers"
+    );
     console.log(
-      chalk.green(
-        "执行完成, 查看镜像: https://harbor.emhes.cn:1080, 发布版本: https://serverweb.emhes.cn/#/containers"
-      )
+      chalk.greenBright(`👌 操作成功, 项目信息: ${project.label}(${version})`),
+      chalk.gray("   👉"),
+      chalk.blueBright(harborLink),
+      chalk.blueBright(pushLink)
     );
   }
 
@@ -48,7 +70,7 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
         choices: Object.keys(config).map((key: string) => {
           return {
             key: key,
-            name: config[key].label,
+            name: config[key as PojectName].label,
             value: key,
           };
         }),
@@ -65,7 +87,7 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
       },
     ])
     .then((result) => {
-      project = config[result.projectName];
+      project = config[result.projectName as PojectName];
       const slectedVersion = result.versionName;
       if (slectedVersion !== "自定义") {
         version = slectedVersion;
@@ -85,7 +107,9 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
             const { inputVersion } = result;
             version = setVersion(inputVersion);
             if (!version) {
-              console.log(chalk.red("版本号格式不正确, 如: 1.0.xx.xxxx"));
+              console.log(
+                chalk.red("🚫 版本号格式不正确, 正确格式为: x.x.xx.xxxx")
+              );
               return;
             }
             build();

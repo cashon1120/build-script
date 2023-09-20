@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export const getVersion = () => {
     let str = '1.0.'
     const date = new Date()
@@ -8,7 +6,7 @@ export const getVersion = () => {
     const day = date.getDate().toString().padStart(2, '0')
     const version =  str + year + month + day
     return {
-        name: `正式环境${version}`,
+        name: `正式环境(${version})`,
         value: version
     }
 };
@@ -17,6 +15,7 @@ export const setVersion = (env: string) => {
   if (env === "dev") {
     return "dev";
   }
+  // 简单判断版本号格式是否为: x.x.xx.xxxx
   if (env.split(".").length !== 4) {
     return "";
   }
