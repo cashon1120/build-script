@@ -3,18 +3,17 @@
 import fs from "fs";
 import chalk from "chalk";
 import inquirer from "inquirer";
-import { execSync } from "child_process";
 import terminalLink from "terminal-link";
+import { execSync } from "child_process";
 import { getVersion, setVersion } from "./utils";
 import { PojectName, Project } from "./types";
-import { config } from "./config";
-import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
+import { config, BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH  } from "./config";
 
 (function () {
   let version = "";
   let project: Project = {} as Project;
 
-  async function build() {
+  async function exec() {
     if (!fs.existsSync(BUILD_CONFIG_PATH)) {
       console.log(chalk.red(`⛔ ${BUILD_CONFIG_PATH} 目录不存在`));
       return;
@@ -45,6 +44,7 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
     console.log(chalk.blue(`${pushExecStr} ...`));
     execSync(pushExecStr);
 
+    // 方便直接跳转到相关网页查看/操作
     const harborLink = terminalLink(
       "[查看镜像]",
       `https://harbor.emhes.cn:1080/harbor/projects/${project.id}/repositories/${project.name}`
@@ -69,7 +69,7 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
         message: "打包项目",
         choices: Object.keys(config).map((key: string) => {
           return {
-            key: key,
+            key,
             name: config[key as PojectName].label,
             value: key,
           };
@@ -80,7 +80,7 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
         name: "versionName",
         message: "打包版本",
         choices: [
-          { name: "测试环境(dev)", value: "dev" },
+          { name: "测试环境: dev", value: "dev" },
           getVersion(),
           "自定义",
         ],
@@ -91,30 +91,27 @@ import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
       const slectedVersion = result.versionName;
       if (slectedVersion !== "自定义") {
         version = slectedVersion;
-        build();
+        exec();
         return;
       }
-      const inputVersion = () => {
-        inquirer
-          .prompt([
-            {
-              type: "input",
-              name: "inputVersion",
-              message: "请输入版本号(如: 1.0.xx.xxxx)",
-            },
-          ])
-          .then((result) => {
-            const { inputVersion } = result;
-            version = setVersion(inputVersion);
-            if (!version) {
-              console.log(
-                chalk.red("🚫 版本号格式不正确, 正确格式为: x.x.xx.xxxx")
-              );
-              return;
-            }
-            build();
-          });
-      };
-      inputVersion();
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            name: "inputVersion",
+            message: "请输入版本号(如: 1.0.xx.xxxx)",
+          },
+        ])
+        .then((result) => {
+          const { inputVersion } = result;
+          version = setVersion(inputVersion);
+          if (!version) {
+            console.log(
+              chalk.red("🚫 版本号格式不正确, 正确格式为: x.x.xx.xxxx")
+            );
+            return;
+          }
+          exec();
+        });
     });
 })();
