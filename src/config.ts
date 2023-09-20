@@ -12,6 +12,11 @@ export const config: any = {
   qtdp: {
     label: "前台大屏",
     name: "vrm_reception",
-    DIST_PATH: "/Users/ymhx/Documents/vrm_big_screen_new/dist",
+    distPath: "/Users/ymhx/Documents/vrm_big_screen_new/dist",
+  },
+  wx: {
+    label: "亿盟公众号",
+    name: "vrm_wx",
+    distPath: "/Users/ymhx/Documents/vrm_login/dist",
   },
 };

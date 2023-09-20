@@ -1,11 +1,11 @@
 {
-  "name": "buildtool",
+  "name": "docker-tool",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "buildtool": "./bin/main.esm.js"
+    "docker-tool": "./bin/main.esm.js"
   },
   "scripts": {
     "build": "rollup -cw"

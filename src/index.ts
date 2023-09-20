@@ -1,11 +1,12 @@
 #! /usr/bin/env node
 
 import { execSync } from "child_process";
+import fs from 'fs';
 import inquirer from "inquirer";
 import chalk from "chalk";
 
 import { config } from "./config";
-import { BUILD_DOCKER_FILE_PATH } from "./constant";
+import { BUILD_DOCKER_FILE_PATH, BUILD_CONFIG_PATH } from "./constant";
 
 const setVersion = (env: string) => {
   if (env === "dev") {
@@ -56,8 +57,12 @@ const setVersion = (env: string) => {
           }
           const project = config[projectKey];
           console.log(chalk.green(`打包信息: ${project.label} - ${version}`))
+          console.log('projectKey: ' + project.distPath)
           console.log('执行命令========================>')
           async function build() {
+            await fs.copyFileSync(BUILD_CONFIG_PATH, project.distPath + '/build.conf')
+            console.log(chalk.green(`拷贝 build.conf 至 ${project.distPath}`))
+            
             const buildStr = `docker build -f ${BUILD_DOCKER_FILE_PATH} -t emhes/${project.name}:${version} ${project.distPath}`;
             console.log(chalk.blue(`${buildStr} ...`));
             await execSync(`${buildStr}`);
