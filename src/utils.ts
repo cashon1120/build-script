@@ -11,13 +11,3 @@ export const getVersion = () => {
   };
 };
 
-export const setVersion = (env: string) => {
-  if (env === "dev") {
-    return "dev";
-  }
-  // 简单判断版本号格式是否为: x.x.xx.xxxx
-  if (env.split(".").length !== 4) {
-    return "";
-  }
-  return env;
-};
