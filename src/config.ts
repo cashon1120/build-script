@@ -28,7 +28,6 @@ export const BUILD_CONFIG_PATH = "/Users/ymhx/Documents/build/build.conf";
 export const BUILD_DOCKER_FILE_PATH = "/Users/ymhx/Documents/build/build.Dockerfile";
 
 
-
 export const config: ConfigType = {
   cloud: {
     label: "运营平台",
@@ -56,7 +55,7 @@ export const config: ConfigType = {
     distPath: "/Users/ymhx/Documents/vrm_new_zsmx/dist",
     imageID: 2,
     containerID: {
-      dev: '1421bcb7f14f8fdafef1f81d278ef7be2892a728b92175e7f2b2b9ad241e6f0b',
+      dev: 'b1b3f7a5c4ef656291b92081afda74d2f3887e3e722504cab1dcb6d827f74749',
       prod: '2cdac7e4d29d2932d5d876cef04a738cd81c62ff6585479539a24e98932d444f'
     }
   },

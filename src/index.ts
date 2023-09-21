@@ -5,9 +5,10 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 import terminalLink from "terminal-link";
 import { execSync, exec } from "child_process";
-import clipboard from 'clipboardy';
+import clipboard from "clipboardy";
 import { getVersion } from "./utils";
 import { PojectName, Project } from "./types";
+import ora from "ora";
 import {
   config,
   BUILD_DOCKER_FILE_PATH,
@@ -16,6 +17,8 @@ import {
   CONTAINER_URL_DEV,
   CONTAINER_URL_PROD,
 } from "./config";
+
+import { deployContainer } from "./deploy";
 
 // 执行命令
 async function execDocker(project: Project, version: string) {
@@ -31,25 +34,35 @@ async function execDocker(project: Project, version: string) {
     console.log(chalk.red(`🚫 ${project.distPath} 目录不存在`));
     return;
   }
-
-  console.log(chalk.gray("开始执行docker命令..."));
-
+  console.log();
   fs.copyFileSync(BUILD_CONFIG_PATH, project.distPath + "/build.conf");
-  console.log(chalk.blue(`拷贝 build.conf 至 ${project.distPath}`));
+  console.log(chalk.blue(`✅ 拷贝 build.conf 至 ${project.distPath}`));
 
-  const buildExecStr = `docker build -f ${BUILD_DOCKER_FILE_PATH} -t emhes/${project.name}:${version} ${project.distPath}`;
-  console.log(chalk.blue(`执行 ${buildExecStr}`));
+  const tagName = `harbor.emhes.cn:1080/platform/${project.name}:${version}`;
+
+  const buildExecStr = `docker build -f ${BUILD_DOCKER_FILE_PATH} -t ${tagName} ${project.distPath}`;
+  let spinner = ora(chalk.gray(`${buildExecStr}`)).start();
 
   const process = exec(buildExecStr);
   if (process && process.stdout && process.stderr) {
-    process.on("close", function (code) {
-      const tagExecStr = `docker tag emhes/${project.name}:${version} harbor.emhes.cn:1080/platform/${project.name}:${version}`;
-      console.log(chalk.blue(`执行 ${tagExecStr}`));
-      execSync(tagExecStr);
+    process.on("close", function () {
+      // const tagExecStr = `docker tag ${tagName} harbor.emhes.cn:1080/platform/${project.name}:${version}`;
+      // console.log(chalk.blue(`执行 ${tagExecStr}`));
+      // execSync(tagExecStr);
+      spinner.stop();
+      console.log(chalk.blue(`✅ ${buildExecStr}`));
 
-      const pushExecStr = `docker push harbor.emhes.cn:1080/platform/${project.name}:${version}`;
-      console.log(chalk.blue(`执行 ${pushExecStr}`));
+      const pushExecStr = `docker push ${tagName}`;
+      spinner = ora(chalk.gray(`${pushExecStr}`)).start();
       execSync(pushExecStr);
+      spinner.stop();
+      console.log(chalk.blue(`✅ ${pushExecStr}`));
+
+      const removeExecStr = `docker rmi ${tagName}`;
+      spinner = ora(chalk.gray(`${removeExecStr}`)).start();
+      execSync(removeExecStr);
+      spinner.stop();
+      console.log(chalk.blue(`✅ ${removeExecStr}`));
 
       // 方便直接跳转到相关网页查看/操作
       const imageLink = terminalLink(
@@ -68,23 +81,26 @@ async function execDocker(project: Project, version: string) {
           ? `${CONTAINER_URL_DEV}/new?from=${project.containerID.dev}`
           : CONTAINER_URL_DEV
       );
+      console.log();
       console.log(
-        chalk.greenBright(`👌 操作成功: ${project.label}`),
+        chalk.greenBright(`👌 Docker镜像推送成功: ${project.label}`),
         chalk.greenBright(`${project.name}:`),
         chalk.underline(chalk.greenBright(version)),
-        version !== 'dev' ? chalk.gray('(已复制)') : ''
+        version !== "dev" ? chalk.gray("(已复制)") : ""
       );
-      console.log() // 来个空行
+      console.log(); // 来个空行
       console.log(
         chalk.gray("👉 更多操作:"),
         chalk.blueBright(imageLink),
         chalk.blueBright(containerDev),
         chalk.blueBright(containerProd)
       );
-      if(version !== 'dev'){
-        clipboard.writeSync(version)
+      if (version !== "dev") {
+        clipboard.writeSync(version);
       }
-      console.log() // 来个空行
+      console.log(); // 来个空行
+
+      // deployContainer(project.name, version);
     });
   }
 }
