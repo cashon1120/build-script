@@ -69,17 +69,14 @@ async function execDocker(project: Project, version: string) {
         "查看镜像",
         `${IMAGE_URL}/harbor/projects/${project.imageID}/repositories/${project.name}`
       );
+      const containerURL = project.containerURL || CONTAINER_URL_PROD
       const containerProd = terminalLink(
         "发布版本(正式)",
-        project.containerID.prod
-          ? `${CONTAINER_URL_PROD}/new?from=${project.containerID.prod}`
-          : CONTAINER_URL_PROD
+        containerURL
       );
       const containerDev = terminalLink(
         "发布版本(测试)",
-        project.containerID.dev
-          ? `${CONTAINER_URL_DEV}/new?from=${project.containerID.dev}`
-          : CONTAINER_URL_DEV
+        CONTAINER_URL_DEV
       );
       console.log();
       console.log(
@@ -91,9 +88,9 @@ async function execDocker(project: Project, version: string) {
       console.log(); // 来个空行
       console.log(
         chalk.gray("👉 更多操作:"),
+        chalk.cyanBright(containerProd),
+        chalk.yellowBright(containerDev),
         chalk.blueBright(imageLink),
-        chalk.blueBright(containerDev),
-        chalk.blueBright(containerProd)
       );
       if (version !== "dev") {
         clipboard.writeSync(version);
