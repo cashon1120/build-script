@@ -41,9 +41,16 @@ export const config: ConfigType = {
     imageID: 2,
   },
   chache: {
-    label: "叉车",
+    label: "尤恩叉车平台",
     name: "vrm_cs_new",
     distPath: "/Users/ymhx/Documents/vrm_cs_new/dist/",
+    imageID: 2,
+    containerURL: CONTAINER_URL_PROD_CHACHE
+  },
+  ccScreen: {
+    label: "尤恩叉车大屏",
+    name: "vrm_chachescreen",
+    distPath: "/Users/ymhx/Documents/chache_big_screen/dist/",
     imageID: 2,
     containerURL: CONTAINER_URL_PROD_CHACHE
   },

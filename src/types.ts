@@ -1,4 +1,4 @@
-export type PojectName = "cloud" | "zsmx" | "wx" | "ubi" | "mz" | "qtdp" | "chache";
+export type PojectName = "cloud" | "zsmx" | "wx" | "ubi" | "mz" | "qtdp" | "chache" | "ccScreen";
 
 export interface Project {
   label: string;

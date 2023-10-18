@@ -71,11 +71,11 @@ async function execDocker(project: Project, version: string) {
       );
       const containerURL = project.containerURL || CONTAINER_URL_PROD
       const containerProd = terminalLink(
-        "发布版本(正式)",
+        "发布[正式]版本",
         containerURL
       );
       const containerDev = terminalLink(
-        "发布版本(测试)",
+        "发布[测试]版本",
         CONTAINER_URL_DEV
       );
       console.log();
@@ -128,7 +128,8 @@ async function execDocker(project: Project, version: string) {
   if (args[1] === "dev") {
     defaultVersionIndex = 0;
   }
-
+  console.log(chalk.yellow('🔰 打包前请确认docker已启动!'))
+  console.log();
   inquirer
     .prompt([
       {
