@@ -40,6 +40,12 @@ export const config: ConfigType = {
     distPath: "/Users/ymhx/Documents/vrm_cs_new/dist/",
     imageID: 2,
   },
+  cloud_java: {
+    label: "运营平台(JAVA)",
+    name: "vrm_cs_java",
+    distPath: "/Users/ymhx/Documents/vrm_cs_new/dist/",
+    imageID: 2,
+  },
   chache: {
     label: "尤恩叉车平台",
     name: "vrm_cs_new",
