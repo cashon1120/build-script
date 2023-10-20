@@ -75,7 +75,7 @@ export const config: ConfigType = {
   mz: {
     label: "慕再",
     name: "vrm_mz",
-    distPath: "/Users/ymhx/Documents/vrm_ubi/dist",
+    distPath: "/Users/ymhx/Documents/vrm_mz/dist",
     imageID: 2,
   },
   qtdp: {
