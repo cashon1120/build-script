@@ -18,7 +18,6 @@ import {
   CONTAINER_URL_PROD,
 } from "./config";
 
-import { deployContainer } from "./deploy";
 
 // 执行命令
 async function execDocker(project: Project, version: string) {

@@ -20,6 +20,12 @@ export const CONTAINER_URL_PROD = 'https://serverweb.emhes.cn/#/containers'
 */
 export const CONTAINER_URL_PROD_CHACHE = 'http://47.110.158.152:9000/#/containers'
 
+export const CONTAINER_URL_PROD_ZSMS = 'http://zsmxweb.emhes.cn:9000/#!/2/docker/containers'
+
+/**
+ * 运营JAVA版本容器地址
+*/
+export const CONTAINER_URL_CLOUD_JAVA = 'https://servervideo.emhes.cn/#!/2/docker/containers'
 
 /**
  * build.conf 文件目录
@@ -45,6 +51,7 @@ export const config: ConfigType = {
     name: "vrm_cs_java",
     distPath: "/Users/ymhx/Documents/vrm_cs_new/dist/",
     imageID: 2,
+    containerURL: CONTAINER_URL_CLOUD_JAVA
   },
   chache: {
     label: "尤恩叉车平台",
@@ -70,6 +77,7 @@ export const config: ConfigType = {
     label: "中升铭行",
     name: "vrm_new_zsmx",
     distPath: "/Users/ymhx/Documents/vrm_new_zsmx/dist",
+    containerURL: CONTAINER_URL_PROD_ZSMS,
     imageID: 2,
   },
   ubi: {
