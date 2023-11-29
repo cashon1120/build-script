@@ -7,7 +7,9 @@ export type PojectName =
   | "mz"
   | "qtdp"
   | "chache"
-  | "ccScreen";
+  | "ccScreen"
+  | "gcdp"
+  ;
 
 export interface Project {
   label: string;
