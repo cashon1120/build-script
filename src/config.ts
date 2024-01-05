@@ -48,9 +48,17 @@ export const config: ConfigType = {
     distPath: `${PROJECT_PATH}vrm_cs_new/dist/`,
     imageID: 2,
   },
+
   cloud_java: {
     label: "运营平台(JAVA)",
     name: "vrm_cs_java",
+    distPath: `${PROJECT_PATH}vrm_cs_new/dist/`,
+    imageID: 2,
+    containerURL: CONTAINER_URL_CLOUD_JAVA
+  },
+  bjsz: {
+    label: "北京市政",
+    name: "vrm_cs_bjsz",
     distPath: `${PROJECT_PATH}vrm_cs_new/dist/`,
     imageID: 2,
     containerURL: CONTAINER_URL_CLOUD_JAVA

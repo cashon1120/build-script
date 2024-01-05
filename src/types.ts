@@ -1,5 +1,6 @@
 export type PojectName =
   | "cloud"
+  | 'bjsz'
   | "cloud_java"
   | "zsmx"
   | "wx"
